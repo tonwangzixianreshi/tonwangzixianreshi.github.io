@@ -1,51 +1,25 @@
-/* 全体 */
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background-color: #f0f0f0;
+#map {
+    position: relative;   /* ← これ超重要 */
+    display: inline-block;
 }
 
-/* ヘッダー */
-header {
-  background-color: #4a6fa5;
-  color: white;
-  text-align: center;
-  padding: 15px;
+#map img {
+    width: 800px;         /* ← サイズ固定 */
+    display: block;
 }
 
-/* 横並びレイアウト */
-.container {
-  display: flex;
+.antenna{
+    position:absolute;
+    width:10px;
+    height:50px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.7);
+    cursor:pointer;
+    transition:0.2s;
+
+    transform: translate(-50%, -50%);  /* ← これ追加 */
 }
 
-/* メニュー */
-nav {
-  width: 200px;
-  background-color: #d0e0ff;
-}
-
-nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-nav li {
-  padding: 10px;
-}
-
-nav a {
-  text-decoration: none;
-  color: black;
-}
-
-/* メイン */
-main {
-  flex: 1;
-  padding: 20px;
-  background-color: white;
-}
-
-/* 見出しサイズ */
-h2 {
-  font-size: 30px;
+.antenna.active {
+    background: red;
 }
