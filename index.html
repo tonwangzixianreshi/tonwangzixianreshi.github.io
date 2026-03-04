@@ -1,39 +1,141 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>復習ページ</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>解読機配置判別ツール</title>
+
+<style>
+body{
+    background:#111;
+    color:white;
+    text-align:center;
+    font-family:sans-serif;
+}
+
+#map{
+    position:relative;
+    display:inline-block;
+}
+
+#map img{
+    width:800px;
+    display:block;
+}
+
+.antenna{
+    position:absolute;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.7);
+    cursor:pointer;
+    transition:0.2s;
+    transform: translate(-50%, -50%);
+}
+
+.antenna.active{
+    background:red;
+}
+
+#result img{
+    width:220px;
+    margin:10px;
+}
+
+button{
+    padding:8px 20px;
+    margin:15px;
+    font-size:16px;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>My Web Page</h1>
-</header>
+<h1>解読機配置判別</h1>
 
-<div class="container">
+<div id="map">
+    <img src="kouzyou.png">
 
-  <nav>
-    <ul>
-      <li><a href="#">ホーム</a></li>
-      <li><a href="#">プロフィール</a></li>
-      <li><a href="#">ゲーム</a></li>
-    </ul>
-  </nav>
-
-  <main>
-    <h2>見出し</h2>
-    <p>ここに文章を書く。</p>
-
-    <ul>
-      <li>項目1</li>
-      <li>項目2</li>
-      <li>項目3</li>
-    </ul>
-  </main>
-
+    <div class="antenna" style="top:100px;left:150px" data-id="A"></div>
+    <div class="antenna" style="top:200px;left:300px" data-id="B"></div>
+    <div class="antenna" style="top:350px;left:400px" data-id="C"></div>
+    <div class="antenna" style="top:150px;left:600px" data-id="D"></div>
+    <div class="antenna" style="top:450px;left:200px" data-id="E"></div>
+    <div class="antenna" style="top:500px;left:500px" data-id="F"></div>
+    <div class="antenna" style="top:300px;left:700px" data-id="G"></div>
+    <div class="antenna" style="top:100px;left:450px" data-id="H"></div>
+    <div class="antenna" style="top:250px;left:100px" data-id="I"></div>
+    <div class="antenna" style="top:400px;left:650px" data-id="J"></div>
+    <div class="antenna" style="top:520px;left:350px" data-id="K"></div>
+    <div class="antenna" style="top:600px;left:600px" data-id="L"></div>
 </div>
+
+<h2 id="count">残り5通り</h2>
+
+<div id="result"></div>
+
+<script>
+
+// 🔥 座標取得用（クリック位置をコンソールに出す）
+document.getElementById("map").addEventListener("click", function(e){
+    const rect = this.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    console.log("top:" + y + "px; left:" + x + "px;");
+});
+
+// 5パターン
+const patterns = [
+    { name:"pattern1.png", antennas:["A","B","C","D","E","F","G"] },
+    { name:"pattern2.png", antennas:["A","H","I","J","K","L","B"] },
+    { name:"pattern3.png", antennas:["C","D","E","H","I","J","K"] },
+    { name:"pattern4.png", antennas:["F","G","A","B","H","I","L"] },
+    { name:"pattern5.png", antennas:["D","E","F","J","K","L","C"] }
+];
+
+let selected = [];
+
+document.querySelectorAll(".antenna").forEach(el=>{
+    el.addEventListener("click",function(e){
+        e.stopPropagation();
+
+        const id = this.dataset.id;
+
+        if(selected.includes(id)){
+            // OFFにする
+            selected = selected.filter(s => s !== id);
+            this.classList.remove("active");
+        }else{
+            // ONにする
+            selected.push(id);
+            this.classList.add("active");
+        }
+
+        updateResult();
+    });
+});
+
+function updateResult(){
+    const filtered = patterns.filter(p =>
+        selected.every(s => p.antennas.includes(s))
+    );
+
+    document.getElementById("count").innerText =
+        "残り" + filtered.length + "通り";
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "";
+
+    filtered.forEach(p=>{
+        const img = document.createElement("img");
+        img.src = p.name;
+        resultDiv.appendChild(img);
+    });
+}
+
+</script>
 
 </body>
 </html>
